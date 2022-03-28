@@ -1,18 +1,9 @@
-import pygame, sys
+import pygame, sys, init
 from pygame.locals import *
 from pygame import mixer
 
-resolution = (1024, 768)
-
-# Initialize pygame
-pygame.init()
-# Title and Icon
-pygame.display.set_caption("RPG")
-# icon = pygame.image.load('player.png')
-pygame.display.set_icon(icon)
-
 # create a screen (width,height)
-screen = pygame.display.set_mode(resolution, DOUBLEBUF, 16)
+screen = pygame.display.set_mode(init.resolution, DOUBLEBUF, 16)
 
 def startMenu():
     start_menu = True
