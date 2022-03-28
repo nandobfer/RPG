@@ -6,6 +6,8 @@ class Item:
         self.name = name
         self.type = type
         self.value = value
+        self.img = 'assets/items/'+name.lower()+'.png'
+        # self.img = pygame.image.load('assets/items/'+name.lower()+'.png').convert_alpha()
 
 
 class Weapon(Item):

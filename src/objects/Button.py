@@ -46,3 +46,11 @@ class Button:
         else:
             screen.blit(self.text, (self.x + 100, self.y + 15))
 
+class Slot(Button):
+    # text, size = (width, height), img = string ("path/file.png")
+    def __init__(self, text, size, img):
+        super().__init__(text, size, img)
+
+    # screen
+    def draw(self, screen):
+        screen.blit(self.img, (self.x - self.offset_x, self.y - self.offset_y))
