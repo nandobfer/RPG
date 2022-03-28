@@ -1,7 +1,8 @@
 import pygame, init
+from src.objects.Item import *
 
 # General Creature Class
-class Creature():
+class Creature:
     # name, position x, position y, size width, size height
     def __init__(self, name, x, y, width, height, img):
         self.name = name
@@ -13,6 +14,7 @@ class Creature():
         self.img = self.img = pygame.image.load(img).convert_alpha()
         self.img = pygame.transform.scale(self.img, (self.width, self.height))
         self.level = 1
+        self.items = []
 
     # Returns creature's name
     def getName(self):
@@ -63,6 +65,12 @@ class Player(Creature):
             map[1] += self.move_speed
 
         return True
+
+    # name = string, type = 'armor/weapon/ammo', param value
+    def addItem(self, name, type, value, quantity):
+        item = Item(name, type, value)
+        for i in range(quantity):
+            self.items.append(item)
 
 
 

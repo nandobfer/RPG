@@ -1,4 +1,4 @@
-import pygame, sys, init, conf, Game, screens.pause
+import pygame, sys, init, conf, Game
 from pygame.locals import *
 from pygame import mixer
 from objects.Button import * # text, size = (width, height), img = string ("path/file.png")
@@ -15,8 +15,12 @@ def start():
     map_size = (background.get_width(),background.get_height())
     print(map_size)
 
-
+    # Player: name, starting position, size, img
     player = Player("Player", init.resolution[0] / 2, init.resolution[1] / 2, 64, 64, conf.player_img)
+
+    #addItem: name = string, type = 'armor/weapon/ammo', param value
+    player.addItem("Pistol", "weapon", 10, 1)
+
 
     # On Game Flag
     game = True

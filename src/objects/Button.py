@@ -1,6 +1,6 @@
 import pygame, conf
 
-class Button():
+class Button:
     # text, size = (width, height), img = string ("path/file.png")
     def __init__(self, text, size, img):
         self.text = conf.text.render(text, True, (170, 170, 170))
