@@ -20,3 +20,4 @@ class Creature():
     def getPosition(self):
         return (x,y)
 
+
