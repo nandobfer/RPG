@@ -17,10 +17,10 @@ class Button():
         self.position = (0,0)
 
     # set size
-    def setSize(self, size):
-        self.size = size
-        self.width = size[0]
-        self.height = size[1]
+    def setSize(self, x, y):
+        self.size = (x,y)
+        self.width = x
+        self.height = y
 
     # set offset for alpha distances in images
     def setOffset(self, x, y):

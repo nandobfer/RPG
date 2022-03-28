@@ -1,10 +1,11 @@
 import pygame, sys, init
 from pygame.locals import *
 from pygame import mixer
-from objects.Button import Button # text, size = (width, height)
+from objects.Button import Button # text, size = (width, height), img = string ("path/file.png")
 
 # create a screen (width,height)
 screen = pygame.display.set_mode(init.resolution, DOUBLEBUF, 16)
+
 # Background
 background = pygame.image.load('assets/background.jpg').convert()
 background = pygame.transform.scale(background, init.resolution)
