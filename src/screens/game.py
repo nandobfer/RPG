@@ -1,4 +1,4 @@
-import pygame, sys, init, conf, Game
+import pygame, sys, init, conf, Game, screens.pause
 from pygame.locals import *
 from pygame import mixer
 from objects.Button import * # text, size = (width, height), img = string ("path/file.png")
@@ -48,14 +48,69 @@ def start():
             # Get all keys pressed
             keys = pygame.key.get_pressed()
 
+            # Pause
+            if keys[pygame.K_ESCAPE]:
+                pause(screen)
+
         # Move player
         player.move(map_position, map_size, keys)
 
         # Draw Player
         player.draw(screen)
 
+        # Draw Buttons (screen, mouse)
+
+
         # Update Screen
         pygame.display.update()
 
         # Print mouse coordenates in console
         # print(mouse)
+
+def pause(screen):
+    # Background
+    pause_background = pygame.Surface(init.resolution, pygame.SRCALPHA)
+    pause_background.fill((100, 0, 100, 128))
+    screen.blit(pause_background, (0, 0))
+
+    # Quit Button
+    quit = Button("Quit", (300, 200), "assets/buttons/button.png")
+    quit.setOffset(10, 60)
+    quit.setPosition(710, 680)
+
+    # Unpause Button
+    unpause = Button("Unpause", (300, 200), "assets/buttons/button.png")
+    unpause.setOffset(10, 60)
+    unpause.setPosition(375, 680)
+
+    # Pause Menu Flag
+    pause = True
+
+    while pause:
+        # Getting mouse position = (x,y)
+        mouse = pygame.mouse.get_pos()
+
+        # Event Loop
+        for event in pygame.event.get():
+
+            # Closing game window
+            if event.type == pygame.QUIT:
+                quitGame()
+
+            # On mouse click
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Quit Button
+                if quit.getMouse(mouse):
+                    Game.quitGame()
+                # Unpause Button
+                if unpause.getMouse(mouse):
+                    pause = False
+
+        # Draw Buttons (screen, mouse)
+        quit.draw(screen, mouse)
+        unpause.draw(screen, mouse)
+
+        # Update Screen
+        pygame.display.update()
+
+

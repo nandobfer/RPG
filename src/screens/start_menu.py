@@ -39,7 +39,7 @@ def start():
         # Show Background
         screen.blit(background, (0, 0))
 
-        # Start listening for events
+        # Event Loop
         for event in pygame.event.get():
 
             # Closing game window
@@ -56,7 +56,7 @@ def start():
                     screens.game.start()
                     start_menu = False
 
-        # Draw Buttons
+        # Draw Buttons (screen, mouse)
         quit.draw(screen, mouse)
         play.draw(screen, mouse)
 
