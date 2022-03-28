@@ -23,7 +23,7 @@ def start():
     mixer.music.set_volume(mixer.music.get_volume() / 2)
 
     # Player: name, starting position, size, img
-    player = Player("Player", init.resolution[0] / 2, init.resolution[1] / 2, 64, 64, conf.player_img)
+    player = Player("Player", init.resolution[0] / 2, init.resolution[1] / 2, 64, 64)
 
     # name = string, type = 'armor/weapon/bag_size', param value
     revolver = Item("Revolver", "gun", 10)
@@ -34,6 +34,13 @@ def start():
     bag = Item("Bag", "backpack", 5)
     player.addItem(bag, 1)
     player.equipBackpack(bag)
+
+    player.addItem(Item("Knife", "weapon", 1), 1)
+
+    # Enemies
+    enemies = []
+    # name, position x, position y, size width, size height, variant, target
+    enemies.append(Enemy("Zombie", player.x, player.y, 64, 64, 3, player))
 
     # On Game Flag
     game = True
@@ -50,7 +57,7 @@ def start():
         mouse = pygame.mouse.get_pos()
 
         # Refresh Rate - FPS
-        clock.tick(60)
+        clock.tick(400)
 
         # Show Background
         screen.fill((0, 0, 0))
@@ -85,6 +92,10 @@ def start():
 
         for bullet in player.bullets:
             bullet.main(screen)
+
+        # Draw enemies
+        for enemy in enemies:
+            enemy.draw(screen, map_position)
 
         # Update Screen
         pygame.display.update()
@@ -142,26 +153,49 @@ def pause(screen, player):
         # Update Screen
         pygame.display.update()
 
-        print(mouse)
+        # print(mouse)
 
 def inventory(screen, mouse, player):
+    item = []
     size = (64, 64)
-    j, k = 0, 0
+    j, k, l = 0, 0, 0
     for i in range(player.backpack.value):
         if i // 5 == 0:
             x = 676 + (64 * i)
             y = 318
             drawFrames(screen, x, y, mouse)
+            if i < len(player.items):
+                item.append(Slot("", size, player.items[i-1].img))
+                item[i-1].setPosition(x, y)
+                item[i-1].getItem(player.items[i-1])
+                item[i-1].draw(screen, mouse)
         elif i // 5 == 1:
             x = 676 + (64 * j)
             y = 318 + 64
             j += 1
             drawFrames(screen, x, y, mouse)
+            if i < len(player.items):
+                item.append(Slot("", size, player.items[i-1].img))
+                item[i-1].setPosition(x, y)
+                item[i-1].draw(screen, mouse)
         elif i // 5 == 2:
             x = 676 + (64 * k)
-            y = 318 + 64
+            y = 318 + 64 + 64
             k += 1
             drawFrames(screen, x, y, mouse)
+            if i < len(player.items):
+                item.append(Slot("", size, player.items[i-1].img))
+                item[i-1].setPosition(x, y)
+                item[i-1].draw(screen, mouse)
+        elif i // 5 == 3:
+            x = 676 + (64 * l)
+            y = 318 + 64 + 64 + 64
+            l += 1
+            drawFrames(screen, x, y, mouse)
+            if i < len(player.items):
+                item.append(Slot("", size, player.items[i-1].img))
+                item[i-1].setPosition(x, y)
+                item[i-1].draw(screen, mouse)
 
 
 def equipment(screen, mouse, player):

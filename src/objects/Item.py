@@ -18,3 +18,11 @@ class Ammo(Item):
     def __init__(self, name, type, value):
         super().__init__(name, type, value)
 
+class Tooltip:
+    # name, values
+    def __init__(self, name, value):
+        self.name = name
+        # self.description = description
+        self.value = value
+        self.img = "assets/buttons/frame.png"
+        self.img = pygame.image.load(self.img).convert_alpha()
