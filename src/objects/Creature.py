@@ -56,6 +56,7 @@ class Player(Creature):
         self.ring_2 = None
         self.neck = None
         self.backpack = None
+        self.inventory_size = 5
 
     # Scroll the map to make player "move" in opposite direction
     def move(self, map, size, keys):

@@ -50,7 +50,12 @@ class Slot(Button):
     # text, size = (width, height), img = string ("path/file.png")
     def __init__(self, text, size, img):
         super().__init__(text, size, img)
-
+        self.img_highlighted = 'assets/items/empty_slots/selected_frame.png'
+        self.img_highlighted = pygame.image.load(self.img_highlighted).convert_alpha()
+        self.img_highlighted = pygame.transform.scale(self.img_highlighted, self.size)
     # screen
-    def draw(self, screen):
-        screen.blit(self.img, (self.x - self.offset_x, self.y - self.offset_y))
+    def draw(self, screen, mouse):
+        if self.getMouse(mouse):
+            screen.blit(self.img_highlighted, (self.x - self.offset_x, self.y - self.offset_y))
+        else:
+            screen.blit(self.img, (self.x - self.offset_x, self.y - self.offset_y))

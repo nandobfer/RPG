@@ -25,11 +25,15 @@ def start():
     # Player: name, starting position, size, img
     player = Player("Player", init.resolution[0] / 2, init.resolution[1] / 2, 64, 64, conf.player_img)
 
-    # name = string, type = 'armor/weapon/ammo', param value
+    # name = string, type = 'armor/weapon/bag_size', param value
     revolver = Item("Revolver", "gun", 10)
     player.addItem(revolver, 1)
     player.equipWeapon(revolver)
     player.addAmmo(100)
+
+    bag = Item("Bag", "backpack", 5)
+    player.addItem(bag, 1)
+    player.equipBackpack(bag)
 
     # On Game Flag
     game = True
@@ -133,6 +137,7 @@ def pause(screen, player):
         unpause.draw(screen, mouse)
 
         inventory(screen, mouse, player)
+        equipment(screen, mouse, player)
 
         # Update Screen
         pygame.display.update()
@@ -140,18 +145,40 @@ def pause(screen, player):
         print(mouse)
 
 def inventory(screen, mouse, player):
-    
-    size = (64,64)
-    drawFrames(screen)
+    size = (64, 64)
+    j, k = 0, 0
+    for i in range(player.backpack.value):
+        if i // 5 == 0:
+            x = 676 + (64 * i)
+            y = 318
+            drawFrames(screen, x, y, mouse)
+        elif i // 5 == 1:
+            x = 676 + (64 * j)
+            y = 318 + 64
+            j += 1
+            drawFrames(screen, x, y, mouse)
+        elif i // 5 == 2:
+            x = 676 + (64 * k)
+            y = 318 + 64
+            k += 1
+            drawFrames(screen, x, y, mouse)
 
-# Empty Slots
+
+def equipment(screen, mouse, player):
+    
+    drawEquipFrames(screen, mouse)
+    drawEquipment(screen, mouse, player)
+
+def drawEquipment(screen, mouse, player):
+    size = (64,64)
+
     # Head
     if not player.head:
         head = Slot("", size, "assets/items/empty_slots/head.png")
     else:
         head = Slot("", size, player.head.img)
     head.setPosition(114, 286)
-    head.draw(screen)
+    head.draw(screen, mouse)
 
     # Chest
     if not player.chest:
@@ -159,7 +186,7 @@ def inventory(screen, mouse, player):
     else:
         chest = Slot("", size, player.chest.img)
     chest.setPosition(114, 350)
-    chest.draw(screen)
+    chest.draw(screen, mouse)
 
     # Legs
     if not player.legs:
@@ -167,7 +194,7 @@ def inventory(screen, mouse, player):
     else:
         legs = Slot("", size, player.legs.img)
     legs.setPosition(114, 414)
-    legs.draw(screen)
+    legs.draw(screen, mouse)
 
     # Boots
     if not player.boots:
@@ -175,7 +202,7 @@ def inventory(screen, mouse, player):
     else:
         boots = Slot("", size, player.boots.img)
     boots.setPosition(114, 478)
-    boots.draw(screen)
+    boots.draw(screen, mouse)
 
     # Neck Slot
     if not player.neck:
@@ -183,15 +210,15 @@ def inventory(screen, mouse, player):
     else:
         neck = Slot("", size, player.neck.img)
     neck.setPosition(50, 318)
-    neck.draw(screen)
+    neck.draw(screen, mouse)
 
     # Backpack Slot
-    # if not player.backpack:
-        # backpack = Slot("", size, "assets/items/empty_slots/offhand.png")
-    # else:
-    #     backpack = Slot("", size, player.packpack.img)
-        # backpack.setPosition(178, 382)
-        # backpack.draw(screen)
+    if not player.backpack:
+        backpack = Slot("", size, "assets/items/empty_slots/offhand.png")
+    else:
+        backpack = Slot("", size, player.backpack.img)
+        backpack.setPosition(178, 318)
+        backpack.draw(screen, mouse)
 
     # Weapon Slot
     if not player.weapon:
@@ -199,57 +226,71 @@ def inventory(screen, mouse, player):
     else:
         weapon = Slot("", size, player.weapon.img)
     weapon.setPosition(50, 382)
-    weapon.draw(screen)
+    weapon.draw(screen, mouse)
 
     # Off Hand Slot
     if not player.offhand:
         offhand = Slot("", size, "assets/items/empty_slots/offhand.png")
-        offhand.setPosition(178, 382)
-        offhand.draw(screen)
+    else:
+        offhand = Slot("", size, player.offhand.img)
+    offhand.setPosition(178, 382)
+    offhand.draw(screen, mouse)
 
     # Ring 1 Slot
     if not player.ring_1:
         ring_1 = Slot("", size, "assets/items/empty_slots/ring.png")
-        ring_1.setPosition(50, 446)
-        ring_1.draw(screen)
+    else:
+        ring_1 = Slot("", size, player.ring_1.img)
+    ring_1.setPosition(50, 446)
+    ring_1.draw(screen, mouse)
 
     # Ring 2 Slot
     if not player.ring_2:
         ring_2 = Slot("", size, "assets/items/empty_slots/ring.png")
-        ring_2.setPosition(178, 446)
-        ring_2.draw(screen)
+    else:
+        ring_2 = Slot("", size, player.ring_2.img)
+    ring_2.setPosition(178, 446)
+    ring_2.draw(screen, mouse)
 
-def drawFrames(screen):
+# draw the equipment frames
+def drawEquipFrames(screen, mouse):
     size = (64,64)
     # Empy
     empty_slot = Slot("", size, "assets/items/empty_slots/frame.png")
     # Head
     empty_slot.setPosition(114, 286)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Chest
     empty_slot.setPosition(114, 350)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Legs
     empty_slot.setPosition(114, 414)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Boots
     empty_slot.setPosition(114, 478)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Neck
     empty_slot.setPosition(50, 318)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Backpack
     empty_slot.setPosition(178, 318)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Weapon
     empty_slot.setPosition(50, 382)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Off Hand
     empty_slot.setPosition(178, 382)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Ring 1
     empty_slot.setPosition(50, 446)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
     # Ring 2
     empty_slot.setPosition(178, 446)
-    empty_slot.draw(screen)
+    empty_slot.draw(screen, mouse)
+
+# Draw an empty frame
+def drawFrames(screen, x, y, mouse):
+    size = (64, 64)
+    empty_slot = Slot("", size, "assets/items/empty_slots/frame.png")
+    empty_slot.setPosition(x, y)
+    empty_slot.draw(screen, mouse)
