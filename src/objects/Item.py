@@ -5,14 +5,14 @@ class Item:
     def __init__(self, name, type, value):
         self.name = name
         self.type = type
-        if self.type == 'armor':
-            self.armor = value
-        elif self.type == 'weapon':
-            self.damage = value
-        elif self.type == 'ammo':
-            self.ammo = value
+        self.value = value
 
 
 class Weapon(Item):
     def __init__(self, name, type, value):
         super().__init__(name, type, value)
+
+class Ammo(Item):
+    def __init__(self, name, type, value):
+        super().__init__(name, type, value)
+

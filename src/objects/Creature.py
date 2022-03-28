@@ -1,5 +1,6 @@
 import pygame, init
 from src.objects.Item import *
+from src.objects.Bullet import *
 
 # General Creature Class
 class Creature:
@@ -40,6 +41,11 @@ class Creature:
         screen.blit(self.img, (self.x, self.y))
 
 class Player(Creature):
+    # name, position x, position y, size width, size height
+    def __init__(self, name, x, y, width, height, img):
+        super().__init__(name, x, y, width, height, img)
+        self.bullets = []
+        self.ammo = 0
 
     # Scroll the map to make player "move" in opposite direction
     def move(self, map, size, keys):
@@ -67,11 +73,29 @@ class Player(Creature):
         return True
 
     # name = string, type = 'armor/weapon/ammo', param value
-    def addItem(self, name, type, value, quantity):
-        item = Item(name, type, value)
+    def addItem(self, item, quantity):
         for i in range(quantity):
             self.items.append(item)
 
+    # quantity = int
+    def addAmmo(self, quantity):
+        self.ammo += quantity
+
+    def setWeapon(self, item):
+        self.items.remove(item)
+        self.weapon = item
+
+    def getWeapon(self):
+        return self.weapon
+
+    def shoot(self, mouse):
+        if self.weapon.type == 'gun':
+            if self.ammo > 0:
+                self.bullets.append(Bullet(self.x, self.y, mouse))
+                self.ammo -= 1
+            else:
+                # empty gun sound
+                pass
 
 
 

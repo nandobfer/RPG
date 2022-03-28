@@ -3,6 +3,8 @@ from pygame.locals import *
 from pygame import mixer
 from objects.Button import * # text, size = (width, height), img = string ("path/file.png")
 from objects.Creature import * # name, position x, position y, size width, size height
+from objects.Item import * # name = string, type = 'armor/weapon/ammo', param value
+from objects.Bullet import * # x, y, mouse = (x,y)
 
 
 def start():
@@ -18,9 +20,11 @@ def start():
     # Player: name, starting position, size, img
     player = Player("Player", init.resolution[0] / 2, init.resolution[1] / 2, 64, 64, conf.player_img)
 
-    #addItem: name = string, type = 'armor/weapon/ammo', param value
-    player.addItem("Pistol", "weapon", 10, 1)
-
+    # name = string, type = 'armor/weapon/ammo', param value
+    pistol = Item("Pistol", "gun", 10)
+    player.addItem(pistol, 1)
+    player.setWeapon(pistol)
+    player.addAmmo(10)
 
     # On Game Flag
     game = True
@@ -49,6 +53,10 @@ def start():
             if event.type == pygame.QUIT:
                 Game.quitGame()
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    player.shoot(mouse)
+
             # Get all keys pressed
             keys = pygame.key.get_pressed()
 
@@ -64,9 +72,12 @@ def start():
 
         # Draw Buttons (screen, mouse)
 
+        for bullet in player.bullets:
+            bullet.main(screen)
 
         # Update Screen
         pygame.display.update()
+
 
         # Print mouse coordenates in console
         # print(mouse)
