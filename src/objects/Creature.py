@@ -1,4 +1,4 @@
-import pygame
+import pygame, init
 
 # General Creature Class
 class Creature():
@@ -40,14 +40,26 @@ class Creature():
 class Player(Creature):
 
     # Scroll the map to make player "move" in opposite direction
-    def move(self, map, direction):
-        if direction == 'left':
+    def move(self, map, size, keys):
+
+        # Setting player boundaries
+        if map[0] <= 10:
+            map[0] = 10
+        elif map[0] >= 0.93 * size[0]:
+            map[0] = 0.93 * size[0]
+        if map[1] <= 10:
+            map[1] = 10
+        elif map[1] >= 0.9125 * size[1]:
+            map[1] = 0.9125 * size[1]
+
+        # Moving map
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             map[0] -= self.move_speed
-        if direction == 'right':
+        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             map[0] += self.move_speed
-        if direction == 'up':
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
             map[1] -= self.move_speed
-        if direction == 'down':
+        elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
             map[1] += self.move_speed
 
         return True

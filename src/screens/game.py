@@ -12,6 +12,9 @@ def start():
     # Background
     background = pygame.image.load('assets/maps/starting.jpg').convert()
     background = pygame.transform.scale(background, (init.resolution[0] * 10, init.resolution[1] * 10))
+    map_size = (background.get_width(),background.get_height())
+    print(map_size)
+
 
     player = Player("Player", init.resolution[0] / 2, init.resolution[1] / 2, 64, 64, conf.player_img)
 
@@ -22,7 +25,7 @@ def start():
     clock = pygame.time.Clock()
 
     # move throught map scrolling it
-    map_position = [0,0]
+    map_position = [100,100]
 
     # Game Loop
     while game:
@@ -35,7 +38,7 @@ def start():
         # Show Background
         screen.blit(background, (-map_position[0], -map_position[1]))
 
-        # Start listening for events
+        # Event Loop
         for event in pygame.event.get():
 
             # Closing game window
@@ -46,14 +49,7 @@ def start():
             keys = pygame.key.get_pressed()
 
         # Move player
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            player.move(map_position, 'left')
-        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            player.move(map_position, 'right')
-        if keys[pygame.K_w] or keys[pygame.K_UP]:
-            player.move(map_position, 'up')
-        elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            player.move(map_position, 'down')
+        player.move(map_position, map_size, keys)
 
         # Draw Player
         player.draw(screen)
