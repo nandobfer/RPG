@@ -61,6 +61,7 @@ class Player(Creature):
         self.moving_left = False
         self.moving_up = False
         self.moving_down = False
+        self.changed_weapon = False
         self.img_feet_idle = pygame.image.load(f"assets/player/Top_Down_Survivor/feet/idle/survivor-idle_0.png")
         self.img_feet_idle = pygame.transform.scale(self.img_feet_idle, (self.width, self.height))
         self.img_body_idle = []
@@ -74,24 +75,60 @@ class Player(Creature):
             self.img_body_walking[i] = pygame.transform.scale(self.img_body_walking[i], (self.width, self.height))
             self.img_feet_walking[i] = pygame.transform.scale(self.img_feet_walking[i], (self.width, self.height))
         self.animation_count = 0
+        self.move_speed = 2
 
     def draw(self, screen):
-        last_update = 0  # since you are just starting the program there is no time that was past.
-        if pygame.time.get_ticks() - last_update > conf.IMAGE_INTERVAL:
-            if self.animation_count + 1 >= 400:
-                self.animation_count = 0
-            self.animation_count += 1
-            last_update = pygame.time.get_ticks()
+        if self.animation_count + 1 >= 300:
+            self.animation_count = 4
+        self.animation_count += 10
 
-        if self.moving_right or self.moving_up:
+        if self.changed_weapon and self.weapon.name == 'Knife':
+            self.changed_weapon = False
+            self.img_body_idle = []
+            self.img_body_walking = []
+            self.img_feet_walking = []
+            for i in range(20):
+                self.img_body_idle.append(pygame.image.load(f"assets/player/Top_Down_Survivor/knife/idle/survivor-idle_knife_{i}.png"))
+                self.img_body_walking.append(pygame.image.load(f"assets/player/Top_Down_Survivor/knife/move/survivor-move_knife_{i}.png"))
+                self.img_feet_walking.append(pygame.image.load(f"assets/player/Top_Down_Survivor/feet/walk/survivor-walk_{i}.png"))
+                self.img_body_idle[i] = pygame.transform.scale(self.img_body_idle[i], (self.width, self.height))
+                self.img_body_walking[i] = pygame.transform.scale(self.img_body_walking[i], (self.width, self.height))
+                self.img_feet_walking[i] = pygame.transform.scale(self.img_feet_walking[i], (self.width, self.height))
+        elif self.changed_weapon and self.weapon.name == 'Revolver':
+            self.changed_weapon = False
+            self.img_body_idle = []
+            self.img_body_walking = []
+            self.img_feet_walking = []
+            for i in range(20):
+                self.img_body_idle.append(
+                    pygame.image.load(f"assets/player/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_{i}.png"))
+                self.img_body_walking.append(
+                    pygame.image.load(f"assets/player/Top_Down_Survivor/handgun/move/survivor-move_handgun_{i}.png"))
+                self.img_feet_walking.append(
+                    pygame.image.load(f"assets/player/Top_Down_Survivor/feet/walk/survivor-walk_{i}.png"))
+                self.img_body_idle[i] = pygame.transform.scale(self.img_body_idle[i], (self.width, self.height))
+                self.img_body_walking[i] = pygame.transform.scale(self.img_body_walking[i], (self.width, self.height))
+                self.img_feet_walking[i] = pygame.transform.scale(self.img_feet_walking[i], (self.width, self.height))
+
+        if self.moving_right:
             screen.blit(self.img_feet_walking[self.animation_count // 20], (self.x, self.y))
             screen.blit(self.img_body_walking[self.animation_count // 20], (self.x, self.y))
-        elif self.moving_left or self.moving_down:
+        elif self.moving_left:
             screen.blit(pygame.transform.flip(self.img_feet_walking[self.animation_count // 20], True, False), (self.x, self.y))
             screen.blit(pygame.transform.flip(self.img_body_walking[self.animation_count // 20], True, False), (self.x, self.y))
+        elif self.moving_up:
+            screen.blit(pygame.transform.rotate(self.img_feet_walking[self.animation_count // 20], 90),
+                        (self.x, self.y))
+            screen.blit(pygame.transform.rotate(self.img_body_walking[self.animation_count // 20], 90),
+                        (self.x, self.y))
+        elif self.moving_down:
+            screen.blit(pygame.transform.rotate(self.img_feet_walking[self.animation_count // 20], -90),
+                        (self.x, self.y))
+            screen.blit(pygame.transform.rotate(self.img_body_walking[self.animation_count // 20], -90),
+                        (self.x, self.y))
         else:
-            screen.blit(self.img_feet_walking[0], (self.x, self.y))
-            screen.blit(self.img_body_idle[self.animation_count // 20], (self.x, self.y))
+            screen.blit(pygame.transform.rotate(self.img_feet_walking[0], -90), (self.x, self.y))
+            screen.blit(pygame.transform.rotate(self.img_body_idle[self.animation_count // 20], -90), (self.x, self.y))
         self.moving_right = False
         self.moving_left = False
         self.moving_up = False
@@ -169,61 +206,62 @@ class Player(Creature):
     def equipWeapon(self, item):
         self.items.remove(item)
         if self.weapon:
-            self.items(append(self.weapon))
+            self.items.append(self.weapon)
         self.weapon = item
+        self.changed_weapon = True
 
     def equipOffhand(self, item):
         self.items.remove(item)
         if self.offhand:
-            self.items(append(self.offhand))
+            self.items.append(self.offhand)
         self.offhand = item
         
     def equipHead(self, item):
         self.items.remove(item)
         if self.head:
-            self.items(append(self.head))
+            self.items.append(self.head)
         self.head = item
         
     def equipChest(self, item):
         self.items.remove(item)
         if self.chest:
-            self.items(append(self.chest))
+            self.items.append(self.chest)
         self.chest = item
         
     def equipLegs(self, item):
         self.items.remove(item)
         if self.legs:
-            self.items(append(self.legs))
+            self.items.append(self.legs)
         self.legs = item
     
     def equipBoots(self, item):
         self.items.remove(item)
         if self.boots:
-            self.items(append(self.boots))
+            self.items.append(self.boots)
         self.boots = item
         
     def equipRing_1(self, item):
         self.items.remove(item)
         if self.ring_1:
-            self.items(append(self.ring_1))
+            self.items.append(self.ring_1)
         self.ring_1 = item
 
     def equipRing_2(self, item):
         self.items.remove(item)
         if self.ring_2:
-            self.items(append(self.ring_2))
+            self.items.append(self.ring_2)
             self.ring_2 = item
 
     def equipNeck(self, item):
         self.items.remove(item)
         if self.neck:
-            self.items(append(self.neck))
+            self.items.append(self.neck)
         self.neck = item
 
     def equipBackpack(self, item):
         self.items.remove(item)
         if self.backpack:
-            self.items(append(self.backpack))
+            self.items.append(self.backpack)
         self.backpack = item
 
 class Enemy(Creature):
@@ -234,10 +272,10 @@ class Enemy(Creature):
         self.moving_left = False
         self.moving_up = False
         self.moving_down = False
-        self.move_speed = 0.1
+        self.move_speed = 0.5
         self.walk_img = []
-        for i in range(6):
-            self.walk_img.append(pygame.image.load(f"assets/enemies/{name.lower()}_{variant}/animation/Walk{i + 1}.png"))
+        for i in range(16):
+            self.walk_img.append(pygame.image.load(f"assets/enemies/{name.lower()}_{variant}/skeleton-move_{i + 1}.png"))
             self.walk_img[i] = pygame.transform.scale(self.walk_img[i], (self.width, self.height))
         self.animation_count = 0
         self.reset_offset = 0
@@ -245,7 +283,7 @@ class Enemy(Creature):
         self.target = player
 
     def draw(self, screen, map):
-        if self.animation_count + 1 >= 26:
+        if self.animation_count + 1 >= 256:
              self.animation_count = 0
         self.animation_count += 1
 
@@ -269,10 +307,14 @@ class Enemy(Creature):
             self.y -= self.move_speed
             self.moving_down = True
 
-        if self.moving_right or self.moving_up:
-            screen.blit(self.walk_img[self.animation_count//6], (self.x - map[0], self.y - map[1]))
-        elif self.moving_left or self.moving_down:
-            screen.blit(pygame.transform.flip(self.walk_img[self.animation_count//6], True, False), (self.x - map[0], self.y - map[1]))
+        if self.moving_right:
+            screen.blit(self.walk_img[self.animation_count//16], (self.x - map[0], self.y - map[1]))
+        elif self.moving_left:
+            screen.blit(pygame.transform.flip(self.walk_img[self.animation_count//16], True, False), (self.x - map[0], self.y - map[1]))
+        elif self.moving_up:
+            screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], 90), (self.x - map[0], self.y - map[1]))
+        elif self.moving_down:
+            screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], -90), (self.x - map[0], self.y - map[1]))
         else:
             screen.blit(self.walk_img[0], (self.x - map[0], self.y - map[1]))
         self.moving_right = False

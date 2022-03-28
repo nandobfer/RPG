@@ -39,7 +39,7 @@ def start():
         mouse = pygame.mouse.get_pos()
 
         # Refresh Rate - FPS
-        clock.tick(10)
+        clock.tick(60)
 
         # Show Background
         screen.blit(background, (0, 0))
@@ -70,7 +70,7 @@ def start():
         pygame.display.update()
 
         # Print mouse coordenates in console
-        print(mouse)
+        # print(mouse)
 
 
 

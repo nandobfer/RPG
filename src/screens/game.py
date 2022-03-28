@@ -35,12 +35,15 @@ def start():
     player.addItem(bag, 1)
     player.equipBackpack(bag)
 
-    player.addItem(Item("Knife", "weapon", 1), 1)
+    knife = Item("Knife", "weapon", 1)
+    player.addItem(knife, 1)
+    # player.equipWeapon(knife)
 
     # Enemies
     enemies = []
     # name, position x, position y, size width, size height, variant, target
-    enemies.append(Enemy("Zombie", player.x, player.y, 64, 64, 3, player))
+    enemies.append(Enemy("Zombie", player.x, player.y, 85, 85, 4, player))
+    enemies_refresh_counter = 0
 
     # On Game Flag
     game = True
@@ -57,7 +60,7 @@ def start():
         mouse = pygame.mouse.get_pos()
 
         # Refresh Rate - FPS
-        clock.tick(400)
+        clock.tick(60)
 
         # Show Background
         screen.fill((0, 0, 0))
@@ -96,6 +99,7 @@ def start():
         # Draw enemies
         for enemy in enemies:
             enemy.draw(screen, map_position)
+
 
         # Update Screen
         pygame.display.update()
@@ -159,6 +163,7 @@ def inventory(screen, mouse, player):
     item = []
     size = (64, 64)
     j, k, l = 0, 0, 0
+
     for i in range(player.backpack.value):
         if i // 5 == 0:
             x = 676 + (64 * i)
@@ -196,6 +201,15 @@ def inventory(screen, mouse, player):
                 item.append(Slot("", size, player.items[i-1].img))
                 item[i-1].setPosition(x, y)
                 item[i-1].draw(screen, mouse)
+    # Event Loop
+    for event in pygame.event.get():
+        for i in range(len(item)):
+            # On mouse click
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if item[i - 1].getMouse(mouse):
+                    player.equipWeapon(player.items[i - 1])
+
+
 
 
 def equipment(screen, mouse, player):
