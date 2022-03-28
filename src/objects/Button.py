@@ -42,7 +42,7 @@ class Button():
     def draw(self, screen, mouse):
         screen.blit(self.img, (self.x - self.offset_x, self.y - self.offset_y))
         if self.getMouse(mouse):
-            screen.blit(self.text_mouse, (self.x + 100, self.y + 15))
+            screen.blit(self.text_mouse, (self.x + 105, self.y + 15))
         else:
-            screen.blit(self.text, (self.x + 100, self.y + 15))
+            screen.blit(self.text, (self.x + 105, self.y + 15))
 

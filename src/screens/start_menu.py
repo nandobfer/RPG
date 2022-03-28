@@ -1,17 +1,16 @@
-import pygame, sys, init
+import pygame, sys, init, conf, screens.game, Game
 from pygame.locals import *
 from pygame import mixer
 from objects.Button import Button # text, size = (width, height), img = string ("path/file.png")
 
-# create a screen (width,height)
-screen = pygame.display.set_mode(init.resolution, DOUBLEBUF, 16)
-
-# Background
-background = pygame.image.load('assets/background.jpg').convert()
-background = pygame.transform.scale(background, init.resolution)
-import conf
-
 def start():
+    # create a screen (width,height)
+    screen = pygame.display.set_mode(init.resolution, DOUBLEBUF, 16)
+
+    # Background
+    background = pygame.image.load('assets/background.jpg').convert()
+    background = pygame.transform.scale(background, init.resolution)
+
     # Start Menu Flag
     start_menu = True
 
@@ -22,6 +21,11 @@ def start():
     quit = Button("Quit", (300,200), "assets/buttons/button.png")
     quit.setOffset(10, 60)
     quit.setPosition(710, 680)
+
+    # Play Button
+    play = Button("Play", (300,200), "assets/buttons/button.png")
+    play.setOffset(10,60)
+    play.setPosition(375, 680)
 
     # Game Loop
     while start_menu:
@@ -46,19 +50,21 @@ def start():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Quit Button
                 if quit.getMouse(mouse):
-                    quitGame()
+                    Game.quitGame()
+                # Play Button
+                if play.getMouse(mouse):
+                    screens.game.start()
+                    start_menu = False
 
         # Draw Buttons
         quit.draw(screen, mouse)
+        play.draw(screen, mouse)
 
         # Update Screen
         pygame.display.update()
 
         # Print mouse coordenates in console
         print(mouse)
-
-def quitGame():
-    sys.exit()
 
 
 
