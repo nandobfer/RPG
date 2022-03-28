@@ -17,6 +17,11 @@ def start():
     map_size = (background.get_width(),background.get_height())
     print(map_size)
 
+    # Music
+    mixer.music.load('assets/audio/game.mp3')
+    mixer.music.play(-1)
+    mixer.music.set_volume(mixer.music.get_volume() / 2)
+
     # Player: name, starting position, size, img
     player = Player("Player", init.resolution[0] / 2, init.resolution[1] / 2, 64, 64, conf.player_img)
 

@@ -7,6 +7,11 @@ def start():
     # create a screen (width,height)
     screen = pygame.display.set_mode(init.resolution, DOUBLEBUF, 16)
 
+    # Music
+    mixer.music.load('assets/audio/main_menu.mp3')
+    mixer.music.play(-1)
+    mixer.music.set_volume(mixer.music.get_volume() / 2)
+
     # Background
     background = pygame.image.load('assets/background.jpg').convert()
     background = pygame.transform.scale(background, init.resolution)
@@ -54,6 +59,7 @@ def start():
                 # Play Button
                 if play.getMouse(mouse):
                     screens.game.start()
+                    mixer.music.stop()
                     start_menu = False
 
         # Draw Buttons (screen, mouse)
