@@ -1,3 +1,2 @@
 Lib/*
-src/__pycache__/*
-src/screen/__pycache__/*
+*.pyc
