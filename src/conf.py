@@ -1,5 +1,4 @@
 import pygame, random, init
 
-# Background
-background = pygame.image.load('assets/background.jpg').convert()
-background = pygame.transform.scale(background, init.resolution)
+# Fonts
+text = pygame.font.Font('assets/walkthemoon.ttf', int(0.04 * init.resolution[0]))
