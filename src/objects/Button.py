@@ -1,4 +1,4 @@
-import pygame, conf
+import pygame, conf, init
 from src.objects.Item import *
 
 class Button:
@@ -55,24 +55,21 @@ class Slot(Button):
         self.img_highlighted = pygame.image.load(self.img_highlighted).convert_alpha()
         self.img_highlighted = pygame.transform.scale(self.img_highlighted, self.size)
         self.tooltip = Tooltip("", 0)
+        self.tooltip_active = None
 
     # screen
     def draw(self, screen, mouse):
-        tooltip = False
         if self.getMouse(mouse):
             screen.blit(self.img_highlighted, (self.x - self.offset_x, self.y - self.offset_y))
             if self.tooltip.name:
-                tooltip = True
-                screen.blit(self.tooltip.img, (self.x - 300, self.y))
+                screen.blit(self.tooltip.img, ((init.resolution[0] / 2) - 180, 318))
+                screen.blit(self.tooltip.name_txt, ((init.resolution[0] / 2) - 120, (init.resolution[1] / 2) - 50))
+                screen.blit(self.tooltip.value_txt, ((init.resolution[0] / 2) - 55, (init.resolution[1] / 2) - 0))
+
         else:
             screen.blit(self.img, (self.x - self.offset_x, self.y - self.offset_y))
-            if tooltip:
-                pause_background = pygame.Surface((self.tooltip.img.get_width(), self.tooltip.img.get_height()), pygame.SRCALPHA)
-                pause_background.fill((100, 0, 100, 128))
-                screen.blit(pause_background, (self.x - 300, self.y))
-                tooltip = False
 
-    def getItem(self, item):
+    def getTooltip(self, item):
         self.item = item
         # name, value
         self.tooltip = Tooltip(item.name, item.value)

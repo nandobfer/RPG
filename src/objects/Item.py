@@ -1,4 +1,4 @@
-import pygame, init
+import pygame, init, conf
 
 class Item:
     # name = string, type = 'armor/weapon/ammo', param value
@@ -8,6 +8,7 @@ class Item:
         self.value = value
         self.img = 'assets/items/'+name.lower()+'.png'
         # self.img = pygame.image.load('assets/items/'+name.lower()+'.png').convert_alpha()
+        self.slot = None
 
 
 class Weapon(Item):
@@ -26,3 +27,5 @@ class Tooltip:
         self.value = value
         self.img = "assets/buttons/frame.png"
         self.img = pygame.image.load(self.img).convert_alpha()
+        self.name_txt = conf.text.render(self.name, True, (170, 170, 170))
+        self.value_txt = conf.text.render(str(self.value), True, (170, 170, 170))

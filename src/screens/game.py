@@ -31,8 +31,8 @@ def start():
     player.equipWeapon(revolver)
     player.addAmmo(100)
 
-    bag = Item("Bag", "backpack", 5)
-    player.addItem(bag, 1)
+    bag = Item("Bag", "backpack", 9)
+    player.addItem(bag, 2)
     player.equipBackpack(bag)
 
     knife = Item("Knife", "weapon", 1)
@@ -147,69 +147,51 @@ def pause(screen, player):
                 if unpause.getMouse(mouse):
                     pause = False
 
+            inventory(screen, mouse, player, event)
+
         # Draw Buttons (screen, mouse)
         quit.draw(screen, mouse)
         unpause.draw(screen, mouse)
 
-        inventory(screen, mouse, player)
-        equipment(screen, mouse, player)
+
 
         # Update Screen
         pygame.display.update()
 
         # print(mouse)
 
-def inventory(screen, mouse, player):
-    item = []
+# controls inventory UI elements
+# screen, mouse = (x,y), player, event
+def inventory(screen, mouse, player, event):
+    # set up equipment ui elements
+    equipment(screen, mouse, player)
     size = (64, 64)
-    j, k, l = 0, 0, 0
+    #list that will receive positions of empty frames
+    frame_position = []
+    max_rows = (player.backpack.value // 5) + 1
 
-    for i in range(player.backpack.value):
-        if i // 5 == 0:
-            x = 676 + (64 * i)
-            y = 318
+    for rows in range(max_rows):
+        for i in range(5):
+            x = 676 + (64 * (i - 1))
+            y = 318 + (64 * rows)
+            # saving each position and drawing slot
+            frame_position.append((x,y))
             drawFrames(screen, x, y, mouse)
-            if i < len(player.items):
-                item.append(Slot("", size, player.items[i-1].img))
-                item[i-1].setPosition(x, y)
-                item[i-1].getItem(player.items[i-1])
-                item[i-1].draw(screen, mouse)
-        elif i // 5 == 1:
-            x = 676 + (64 * j)
-            y = 318 + 64
-            j += 1
-            drawFrames(screen, x, y, mouse)
-            if i < len(player.items):
-                item.append(Slot("", size, player.items[i-1].img))
-                item[i-1].setPosition(x, y)
-                item[i-1].draw(screen, mouse)
-        elif i // 5 == 2:
-            x = 676 + (64 * k)
-            y = 318 + 64 + 64
-            k += 1
-            drawFrames(screen, x, y, mouse)
-            if i < len(player.items):
-                item.append(Slot("", size, player.items[i-1].img))
-                item[i-1].setPosition(x, y)
-                item[i-1].draw(screen, mouse)
-        elif i // 5 == 3:
-            x = 676 + (64 * l)
-            y = 318 + 64 + 64 + 64
-            l += 1
-            drawFrames(screen, x, y, mouse)
-            if i < len(player.items):
-                item.append(Slot("", size, player.items[i-1].img))
-                item[i-1].setPosition(x, y)
-                item[i-1].draw(screen, mouse)
-    # Event Loop
-    for event in pygame.event.get():
-        for i in range(len(item)):
+
+    # drawing each item from player's inventory
+    for item in player.items:
+        if item:
+            # retrieving position from before list
+            position = frame_position.pop(0)
+            # instanciating a new Slot, positioning and drawing
+            item.slot = Slot("", size, item.img)
+            item.slot.setPosition(position[0],position[1])
+            item.slot.getTooltip(item)
+            item.slot.draw(screen, mouse)
             # On mouse click
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if item[i - 1].getMouse(mouse):
-                    player.equipWeapon(player.items[i - 1])
-
-
+                if item.slot.getMouse(mouse):
+                    player.equipWeapon(item)
 
 
 def equipment(screen, mouse, player):
