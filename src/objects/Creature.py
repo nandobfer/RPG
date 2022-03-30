@@ -3,9 +3,16 @@ from src.objects.Item import *
 from src.objects.Bullet import *
 
 # General Creature Class
-class Creature:
+class Creature(pygame.sprite.Sprite):
     # name, position x, position y, size width, size height
     def __init__(self, name, x, y, width, height):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((width, height))
+        self.image.fill((0,0,255))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
         self.name = name
         self.x = x
         self.y = y
@@ -16,6 +23,19 @@ class Creature:
         # self.img = pygame.transform.scale(self.img, (self.width, self.height))
         self.level = 1
         self.items = []
+        self.equipment = {
+            'main_hand': None,
+            "off_hand": None,
+            'head': None,
+            'chest': None,
+            'legs': None,
+            'boots': None,
+            'neck': None,
+            'backpack': None,
+            'l_ring': None,
+            'r_ring': None
+
+        }
 
     # Returns creature's name
     def getName(self):
@@ -30,7 +50,7 @@ class Creature:
         self.level = new_level
 
     # Returns creature's level (int)
-    def getPosition(self):
+    def getLevel(self):
         return self.level
 
     # Returns creature's position as a tuple
@@ -40,22 +60,17 @@ class Creature:
     def draw(self, screen):
         screen.blit(self.img, (self.x, self.y))
 
+    def getEquipment(self):
+        for item in self.equipment:
+            if self.equipment[item]:
+                print(self.equipment[item].name)
+
 class Player(Creature):
     # name, position x, position y, size width, size height
     def __init__(self, name, x, y, width, height):
         super().__init__(name, x, y, width, height)
-        self.bullets = []
+        self.bullets = pygame.sprite.Group()
         self.ammo = 0
-        self.weapon = None
-        self.head = None
-        self.chest = None
-        self.legs = None
-        self.boots = None
-        self.offhand = None
-        self.ring_1 = None
-        self.ring_2 = None
-        self.neck = None
-        self.backpack = None
         self.inventory_size = 5
         self.moving_right = False
         self.moving_left = False
@@ -82,7 +97,7 @@ class Player(Creature):
             self.animation_count = 4
         self.animation_count += 10
 
-        if self.changed_weapon and self.weapon.name == 'Knife':
+        if self.changed_weapon and self.equipment['main_hand'].name == 'Knife':
             self.changed_weapon = False
             self.img_body_idle = []
             self.img_body_walking = []
@@ -94,7 +109,7 @@ class Player(Creature):
                 self.img_body_idle[i] = pygame.transform.scale(self.img_body_idle[i], (self.width, self.height))
                 self.img_body_walking[i] = pygame.transform.scale(self.img_body_walking[i], (self.width, self.height))
                 self.img_feet_walking[i] = pygame.transform.scale(self.img_feet_walking[i], (self.width, self.height))
-        elif self.changed_weapon and self.weapon.name == 'Revolver':
+        elif self.changed_weapon and self.equipment['main_hand'].name == 'Revolver':
             self.changed_weapon = False
             self.img_body_idle = []
             self.img_body_walking = []
@@ -177,97 +192,53 @@ class Player(Creature):
             self.items.append(item)
 
     def getWeapon(self):
-        return self.weapon
+        return self.equipment['main_hand']
 
     def getRings(self):
-        if self.ring_1 and self.ring_2:
+        if self.equipment[l_ring] and self.equipment[r_ring]:
             return 3
-        elif self.ring_1:
+        elif self.equipment[l_ring]:
             return 1
-        elif self.ring_2:
+        elif self.equipment[r_ring]:
             return 2
         else:
             return 0
 
     def shoot(self, mouse):
-        if self.weapon.type == 'gun':
+        if self.equipment['main_hand'].isgun:
             if self.ammo > 0:
-                self.bullets.append(Bullet(self.x, self.y, mouse))
+                bullet = Bullet(self.x, self.y, mouse)
+                self.bullets.add(bullet)
                 self.ammo -= 1
             else:
                 # empty gun sound
                 pass
     
 # EQUIPMENT SETS
+    def equipItem(self, item):
+        self.items.remove(item)
+        if self.equipment[item.type]:
+            self.items.append(self.equipment[item.type])
+            if item.type == 'main_hand':
+                self.changed_weapon = True
+        self.equipment[item.type] = item
+
+    def unequipItem(self, item):
+        if self.equipment[item.type]:
+            self.items.append(self.equipment[item.type])
+            if item.type == 'main_hand':
+                self.changed_weapon = True
+            self.equipment[item.type] = None
+
     # quantity = int
     def addAmmo(self, quantity):
         self.ammo += quantity
 
-    def equipWeapon(self, item):
-        self.items.remove(item)
-        if self.weapon:
-            self.items.append(self.weapon)
-        self.weapon = item
-        self.changed_weapon = True
-
-    def equipOffhand(self, item):
-        self.items.remove(item)
-        if self.offhand:
-            self.items.append(self.offhand)
-        self.offhand = item
-        
-    def equipHead(self, item):
-        self.items.remove(item)
-        if self.head:
-            self.items.append(self.head)
-        self.head = item
-        
-    def equipChest(self, item):
-        self.items.remove(item)
-        if self.chest:
-            self.items.append(self.chest)
-        self.chest = item
-        
-    def equipLegs(self, item):
-        self.items.remove(item)
-        if self.legs:
-            self.items.append(self.legs)
-        self.legs = item
-    
-    def equipBoots(self, item):
-        self.items.remove(item)
-        if self.boots:
-            self.items.append(self.boots)
-        self.boots = item
-        
-    def equipRing_1(self, item):
-        self.items.remove(item)
-        if self.ring_1:
-            self.items.append(self.ring_1)
-        self.ring_1 = item
-
-    def equipRing_2(self, item):
-        self.items.remove(item)
-        if self.ring_2:
-            self.items.append(self.ring_2)
-            self.ring_2 = item
-
-    def equipNeck(self, item):
-        self.items.remove(item)
-        if self.neck:
-            self.items.append(self.neck)
-        self.neck = item
-
-    def equipBackpack(self, item):
-        self.items.remove(item)
-        if self.backpack:
-            self.items.append(self.backpack)
-        self.backpack = item
-
 class Enemy(Creature):
     # name, position x, position y, size width, size height, variant, target
-    def __init__(self, name, x, y, width, height, variant, player):
+    def __init__(self, name, x, y, width, height, variant, player, map):
         super().__init__(name, x, y, width, height)
+        self.image.fill((255, 0, 0))
         self.moving_right = False
         self.moving_left = False
         self.moving_up = False
@@ -281,8 +252,10 @@ class Enemy(Creature):
         self.reset_offset = 0
         self.offset = (random.randrange(-150,150), random.randrange(-150,150))
         self.target = player
+        self.hitbox = 50
+        self.last_map = map[:]
 
-    def draw(self, screen, map):
+    def move(self, screen, map):
         if self.animation_count + 1 >= 256:
              self.animation_count = 0
         self.animation_count += 1
@@ -293,32 +266,48 @@ class Enemy(Creature):
         else:
             self.reset_offset -= 1
 
-        if self.target.x + self.offset[0] > self.x - map[0]:
+        if self.target.x + self.offset[0] > self.x:
             self.x += self.move_speed
             self.moving_right = True
-        if self.target.x + self.offset[0] < self.x - map[0]:
+        if self.target.x + self.offset[0] < self.x:
             self.x -= self.move_speed
             self.moving_left = True
 
-        if self.target.y + self.offset[1] > self.y - map[1]:
+        if self.target.y + self.offset[1] > self.y:
             self.y += self.move_speed
             self.moving_up = True
-        if self.target.y + self.offset[1] < self.y - map[1]:
+        if self.target.y + self.offset[1] < self.y:
             self.y -= self.move_speed
             self.moving_down = True
 
         if self.moving_right:
-            screen.blit(self.walk_img[self.animation_count//16], (self.x - map[0], self.y - map[1]))
+            screen.blit(self.walk_img[self.animation_count//16], (self.x, self.y))
         elif self.moving_left:
-            screen.blit(pygame.transform.flip(self.walk_img[self.animation_count//16], True, False), (self.x - map[0], self.y - map[1]))
+            screen.blit(pygame.transform.flip(self.walk_img[self.animation_count//16], True, False), (self.x, self.y))
         elif self.moving_up:
-            screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], 90), (self.x - map[0], self.y - map[1]))
+            screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], 90), (self.x, self.y))
         elif self.moving_down:
-            screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], -90), (self.x - map[0], self.y - map[1]))
+            screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], -90), (self.x, self.y))
         else:
-            screen.blit(self.walk_img[0], (self.x - map[0], self.y - map[1]))
+            screen.blit(self.walk_img[0], (self.x, self.y))
         self.moving_right = False
         self.moving_left = False
         self.moving_up = False
         self.moving_down = False
+        if not self.last_map[0] == map[0]:
+            if self.last_map[0] > map[0]:
+                self.x += self.last_map[0] - map[0]
+            else:
+                self.x += self.last_map[0] - map[0]
+            self.last_map[0] = map[0]
+        if not self.last_map[1] == map[1]:
+            if self.last_map[1] > map[1]:
+                self.y += self.last_map[1] - map[1]
+            else:
+                self.y += self.last_map[1] - map[1]
+            self.last_map[1] = map[1]
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+
 

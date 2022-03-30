@@ -2,13 +2,18 @@ import pygame, init, conf
 
 class Item:
     # name = string, type = 'armor/weapon/ammo', param value
-    def __init__(self, name, type, value):
+    def __init__(self, name, type, value, isgun = False):
         self.name = name
         self.type = type
         self.value = value
         self.img = 'assets/items/'+name.lower()+'.png'
         # self.img = pygame.image.load('assets/items/'+name.lower()+'.png').convert_alpha()
         self.slot = None
+        self.isgun = isgun
+
+    def isGun(self):
+        if self.isgun:
+            return True
 
 
 class Weapon(Item):
