@@ -37,7 +37,7 @@ def start():
     player.equipItem(revolver)
     player.addAmmo(5)
 
-    bag = Item("Bag", "backpack", 5)
+    bag = Item("Bag", "backpack", 10)
     player.addItem(bag, 2)
     player.equipItem(bag)
 
@@ -190,9 +190,9 @@ def inventory(screen, mouse, player, event):
     size = (64, 64)
     #list that will receive positions of empty frames
     frame_position = []
-    max_rows = 2
+    max_rows = 1
     if player.equipment['backpack']:
-        max_rows = (player.equipment['backpack'].value // 5) + 1
+        max_rows = (player.equipment['backpack'].value // 5)
 
     for rows in range(max_rows):
         for i in range(5):
@@ -229,50 +229,75 @@ def drawEquipment(screen, mouse, player, event):
     # Head
     if not player.equipment['head']:
         head = Slot("", size, "assets/items/empty_slots/head.png")
+        head.setPosition(114, 286)
+        head.draw(screen, mouse)
     else:
         head = Slot("", size, playerequipment['head'].img)
+        head.setPosition(114, 286)
+        head.draw(screen, mouse)
         if event.type == pygame.MOUSEBUTTONDOWN:
             if head.getMouse(mouse):
                 player.unequipItem(player.equipment['head'])
-    head.setPosition(114, 286)
-    head.draw(screen, mouse)
+
 
 
     # Chest
     if not player.equipment['chest']:
         chest = Slot("", size, "assets/items/empty_slots/chest.png")
+        chest.setPosition(114, 350)
+        chest.draw(screen, mouse)
     else:
         chest = Slot("", size, player.equipment['chest'].img)
-    chest.setPosition(114, 350)
-    chest.draw(screen, mouse)
+        chest.setPosition(114, 350)
+        chest.draw(screen, mouse)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if chest.getMouse(mouse):
+                player.unequipItem(player.equipment['chest'])
 
     # Legs
     if not player.equipment['legs']:
         legs = Slot("", size, "assets/items/empty_slots/trousers.png")
+        legs.setPosition(114, 414)
+        legs.draw(screen, mouse)
     else:
         legs = Slot("", size, player.equipment['legs'].img)
-    legs.setPosition(114, 414)
-    legs.draw(screen, mouse)
+        legs.setPosition(114, 414)
+        legs.draw(screen, mouse)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if legs.getMouse(mouse):
+                player.unequipItem(player.equipment['legs'])
 
     # Boots
     if not player.equipment['boots']:
         boots = Slot("", size, "assets/items/empty_slots/feet.png")
+        boots.setPosition(114, 478)
+        boots.draw(screen, mouse)
     else:
         boots = Slot("", size, player.equipment['boots'].img)
-    boots.setPosition(114, 478)
-    boots.draw(screen, mouse)
+        boots.setPosition(114, 478)
+        boots.draw(screen, mouse)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if boots.getMouse(mouse):
+                player.unequipItem(player.equipment['boots'])
 
     # Neck Slot
     if not player.equipment['neck']:
         neck = Slot("", size, "assets/items/empty_slots/neck.png")
+        neck.setPosition(50, 318)
+        neck.draw(screen, mouse)
     else:
         neck = Slot("", size, player.equipment['neck'].img)
-    neck.setPosition(50, 318)
-    neck.draw(screen, mouse)
+        neck.setPosition(50, 318)
+        neck.draw(screen, mouse)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if neck.getMouse(mouse):
+                player.unequipItem(player.equipment['neck'])
 
     # Backpack Slot
     if not player.equipment['backpack']:
         backpack = Slot("", size, "assets/items/empty_slots/offhand.png")
+        backpack.setPosition(178, 318)
+        backpack.draw(screen, mouse)
     else:
         backpack = Slot("", size, player.equipment['backpack'].img)
         backpack.setPosition(178, 318)
@@ -285,34 +310,54 @@ def drawEquipment(screen, mouse, player, event):
     # Weapon Slot
     if not player.equipment['main_hand']:
         mainhand = Slot("", size, "assets/items/empty_slots/mainhand.png")
+        mainhand.setPosition(50, 382)
+        mainhand.draw(screen, mouse)
     else:
         mainhand = Slot("", size, player.equipment['main_hand'].img)
-    mainhand.setPosition(50, 382)
-    mainhand.draw(screen, mouse)
+        mainhand.setPosition(50, 382)
+        mainhand.draw(screen, mouse)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if mainhand.getMouse(mouse):
+                player.unequipItem(player.equipment['main_hand'])
 
     # Off Hand Slot
     if not player.equipment['off_hand']:
         offhand = Slot("", size, "assets/items/empty_slots/offhand.png")
+        offhand.setPosition(178, 382)
+        offhand.draw(screen, mouse)
     else:
         offhand = Slot("", size, player.equipment['off_hand'].img)
-    offhand.setPosition(178, 382)
-    offhand.draw(screen, mouse)
+        offhand.setPosition(178, 382)
+        offhand.draw(screen, mouse)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if offhand.getMouse(mouse):
+                player.unequipItem(player.equipment['off_hand'])
 
     # Ring 1 Slot
     if not player.equipment['l_ring']:
         l_ring = Slot("", size, "assets/items/empty_slots/ring.png")
+        l_ring.setPosition(50, 446)
+        l_ring.draw(screen, mouse)
     else:
         l_ring = Slot("", size, player.equipment['l_ring'].img)
-    l_ring.setPosition(50, 446)
-    l_ring.draw(screen, mouse)
+        l_ring.setPosition(50, 446)
+        l_ring.draw(screen, mouse)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if l_ring.getMouse(mouse):
+                player.unequipItem(player.equipment['l_ring'])
 
     # Ring 2 Slot
     if not player.equipment['r_ring']:
         r_ring = Slot("", size, "assets/items/empty_slots/ring.png")
+        r_ring.setPosition(178, 446)
+        r_ring.draw(screen, mouse)
     else:
         r_ring = Slot("", size, player.equipment['r_ring'].img)
-    r_ring.setPosition(178, 446)
-    r_ring.draw(screen, mouse)
+        r_ring.setPosition(178, 446)
+        r_ring.draw(screen, mouse)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if r_ring.getMouse(mouse):
+                player.unequipItem(player.equipment['r_ring'])
 
 # draw the equipment frames
 def drawEquipFrames(screen, mouse):
