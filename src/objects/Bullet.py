@@ -1,4 +1,6 @@
 import pygame, init, math
+from pygame.locals import *
+from pygame import mixer
 
 class Bullet(pygame.sprite.Sprite):
     # x, y, mouse = (x,y)
@@ -13,13 +15,14 @@ class Bullet(pygame.sprite.Sprite):
         self.x = x+10
         self.y = y+30
         self.mouse = mouse
-        self.speed = 30
+        self.speed = 50
         self.angle = math.atan2(y - mouse[1], x - mouse[0])
         self.velocity = [
             math.cos(self.angle) * self.speed,
             math.sin(self.angle) * self.speed
         ]
         self.damage = 0
+        self.duration = 0
 
     # Runs on game loop
     def main(self, screen):
@@ -36,14 +39,18 @@ class Bullet(pygame.sprite.Sprite):
         # bullet draw >going to be image?
         pygame.draw.circle(screen, (0,0,0), (self.rect.centerx, self.rect.centery), 5)
 
+        # bullet sound
+        self.duration += 1
+        print(self.duration)
+
     # enemies = pygame.sprite.Group()
     def getCollision(self, enemies):
         hits = pygame.sprite.spritecollide(self, enemies, False)
         if hits:
             for enemy in hits:
                 if enemy.alive:
-                    enemy.hp -= self.damage
-                    self.kill()
+                    return enemy
+
 
             # enemy loses HP
 

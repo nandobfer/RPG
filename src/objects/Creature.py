@@ -1,6 +1,8 @@
 import pygame, init, conf, random
 from src.objects.Item import *
 from src.objects.Bullet import *
+from pygame.locals import *
+from pygame import mixer
 
 # General Creature Class
 class Creature(pygame.sprite.Sprite):
@@ -40,8 +42,10 @@ class Creature(pygame.sprite.Sprite):
             'backpack': None,
             'l_ring': None,
             'r_ring': None
-
         }
+        self.direction = 'down'
+        self.attacking = 0
+        self.attack_speed = 1
 
     # Returns creature's name
     def getName(self):
@@ -67,12 +71,16 @@ class Creature(pygame.sprite.Sprite):
         screen.blit(self.img, (self.x, self.y))
 
     def healthMain(self, screen):
+        if self.alive:
+            screen.blit(self.hp_bar, (self.x, self.y - 10))
+
+    def takeDamage(self, damage):
+        self.hp -= damage
         if self.hp <= 0:
             self.alive = False
             # self.kill()
         else:
             self.hp_bar = pygame.transform.scale(self.hp_bar, (self.width * self.hp / self.max_hp, 5))
-            screen.blit(self.hp_bar, (self.x, self.y - 10))
 
     def getEquipment(self):
         for item in self.equipment:
@@ -108,7 +116,18 @@ class Player(Creature):
 
     # game loop event
     def main(self, screen):
+        # updating and drawing health bar
         self.healthMain(screen)
+
+        # checking if attacking and controling attack speed
+        if self.attacking > 0:
+            self.attacking -= self.attack_speed
+            if self.attacking == 30 and self.equipment['main_hand'].isgun:
+                bulletSound = mixer.Sound('assets/audio/guns/revolver/clicking.mp3')
+                bulletSound.play()
+
+
+        # animation counting
         if self.animation_count + 1 >= 300:
             self.animation_count = 4
         self.animation_count += 10
@@ -158,8 +177,22 @@ class Player(Creature):
             screen.blit(pygame.transform.rotate(self.img_body_walking[self.animation_count // 20], -90),
                         (self.x, self.y))
         else:
-            screen.blit(pygame.transform.rotate(self.img_feet_walking[0], -90), (self.x, self.y))
-            screen.blit(pygame.transform.rotate(self.img_body_idle[self.animation_count // 20], -90), (self.x, self.y))
+            if self.direction == 'down':
+                screen.blit(pygame.transform.rotate(self.img_feet_walking[9], -90), (self.x, self.y))
+                screen.blit(pygame.transform.rotate(self.img_body_idle[self.animation_count // 20], -90), (self.x, self.y))
+            elif self.direction == 'up':
+                screen.blit(pygame.transform.rotate(self.img_feet_walking[9], 90),
+                            (self.x, self.y))
+                screen.blit(pygame.transform.rotate(self.img_body_walking[self.animation_count // 20], 90),
+                            (self.x, self.y))
+            elif self.direction == 'right':
+                screen.blit(self.img_feet_walking[9], (self.x, self.y))
+                screen.blit(self.img_body_walking[self.animation_count // 20], (self.x, self.y))
+            else:
+                screen.blit(pygame.transform.flip(self.img_feet_walking[9], True, False),
+                            (self.x, self.y))
+                screen.blit(pygame.transform.flip(self.img_body_walking[self.animation_count // 20], True, False),
+                            (self.x, self.y))
         self.moving_right = False
         self.moving_left = False
         self.moving_up = False
@@ -181,21 +214,25 @@ class Player(Creature):
         # Moving map
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.moving_left = True
+            self.direction = 'left'
             map[0] -= self.move_speed
             for bullet in self.bullets:
                 bullet.x += self.move_speed
         elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.moving_right = True
+            self.direction = 'right'
             map[0] += self.move_speed
             for bullet in self.bullets:
                 bullet.x -= self.move_speed
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             self.moving_up = True
+            self.direction = 'up'
             map[1] -= self.move_speed
             for bullet in self.bullets:
                 bullet.y += self.move_speed
         elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
             self.moving_down = True
+            self.direction = 'down'
             map[1] += self.move_speed
             for bullet in self.bullets:
                 bullet.y -= self.move_speed
@@ -221,17 +258,27 @@ class Player(Creature):
             return 0
 
     def shoot(self, mouse):
-        if self.equipment['main_hand'].isgun:
+        # if a gun is equipped
+        if self.equipment['main_hand'].isgun and self.attacking == 0:
+            # if there i ammo
             if self.ammo > 0:
+                # instanciate a bullet and adds to sprite group
                 bullet = Bullet(self.x, self.y, mouse)
                 self.bullets.add(bullet)
+                # getting bullet damage from gun's damage
                 bullet.damage = self.getWeapon().value
+                # removing a bullet
                 self.ammo -= 1
-                self.hp -= 1
-                self.hp_bar = pygame.transform.scale(self.hp_bar, (self.width * self.hp / self.max_hp,5))
+                # playing a gunfire sound
+                bulletSound = mixer.Sound('assets/audio/guns/revolver/fire.wav')
+                bulletSound.play()
+
+                # flagging attacking for interval control
+                self.attacking = 60 * 2
 
             else:
-                # empty gun sound
+                bulletSound = mixer.Sound('assets/audio/guns/revolver/clicking.mp3')
+                bulletSound.play()
                 pass
     
 # EQUIPMENT SETS

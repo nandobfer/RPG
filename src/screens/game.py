@@ -25,7 +25,7 @@ def start():
     mixer.music.set_volume(mixer.music.get_volume() / 2)
 
     # main throught map scrolling it
-    map_position = [100, 100]
+    map_position = [1000, 1000]
 
     # Player: name, starting position, size, img
     player = Player("Player", init.resolution[0] / 2, init.resolution[1] / 2, 64, 64)
@@ -35,9 +35,9 @@ def start():
     revolver = Item("Revolver", "main_hand", 10, True)
     player.addItem(revolver, 1)
     player.equipItem(revolver)
-    player.addAmmo(100)
+    player.addAmmo(5)
 
-    bag = Item("Bag", "backpack", 9)
+    bag = Item("Bag", "backpack", 5)
     player.addItem(bag, 2)
     player.equipItem(bag)
 
@@ -95,16 +95,19 @@ def start():
 
         # Draw Sprites
         all_sprites.draw(screen)
-        player.bullets.draw(screen)
         enemies.draw(screen)
 
         for enemy in enemies:
             enemy.main(screen, map_position)
 
         # Draw bullets and check collision
+        player.bullets.draw(screen)
         for bullet in player.bullets:
             bullet.main(screen)
-            bullet.getCollision(enemies)
+            enemy = bullet.getCollision(enemies)
+            if enemy and not type(enemy) == bool:
+                enemy.takeDamage(bullet.damage)
+                bullet.kill()
 
         # Check colisions
         hits = pygame.sprite.spritecollide(player, enemies, False)
@@ -187,7 +190,9 @@ def inventory(screen, mouse, player, event):
     size = (64, 64)
     #list that will receive positions of empty frames
     frame_position = []
-    max_rows = (player.equipment['backpack'].value // 5) + 1
+    max_rows = 2
+    if player.equipment['backpack']:
+        max_rows = (player.equipment['backpack'].value // 5) + 1
 
     for rows in range(max_rows):
         for i in range(5):
@@ -226,10 +231,12 @@ def drawEquipment(screen, mouse, player, event):
         head = Slot("", size, "assets/items/empty_slots/head.png")
     else:
         head = Slot("", size, playerequipment['head'].img)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if head.getMouse(mouse):
+                player.unequipItem(player.equipment['head'])
     head.setPosition(114, 286)
     head.draw(screen, mouse)
-    if head.getMouse(mouse):
-        player.unequipItem(player.equipment['head'])
+
 
     # Chest
     if not player.equipment['chest']:
@@ -271,7 +278,7 @@ def drawEquipment(screen, mouse, player, event):
         backpack.setPosition(178, 318)
         backpack.draw(screen, mouse)
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if head.getMouse(mouse):
+            if backpack.getMouse(mouse):
                 player.unequipItem(player.equipment['backpack'])
 
 
