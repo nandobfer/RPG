@@ -19,19 +19,35 @@ class Bullet(pygame.sprite.Sprite):
             math.cos(self.angle) * self.speed,
             math.sin(self.angle) * self.speed
         ]
+        self.damage = 0
 
+    # Runs on game loop
     def main(self, screen):
+        # bullet boundaries
+        if self.x > init.resolution[0] or self.y > init.resolution[1] or (self.x, self.y) < (0,0):
+            self.kill()
+
+        # bullet movement
         self.x -= int(self.velocity[0])
         self.y -= int(self.velocity[1])
         self.rect.x = self.x
         self.rect.y = self.y
 
-        # pygame.draw.circle(screen, (0,0,0), (self.x, self.y), 5)
+        # bullet draw >going to be image?
+        pygame.draw.circle(screen, (0,0,0), (self.rect.centerx, self.rect.centery), 5)
 
-    def getCollision(self, enemy):
-        distance = math.sqrt(math.pow(enemy.x - self.x, 2) + math.pow(enemy.y - self.y, 2))
-        if distance < enemy.hitbox:
-            # collisionSound = mixer.Sound('explosion.wav')
+    # enemies = pygame.sprite.Group()
+    def getCollision(self, enemies):
+        hits = pygame.sprite.spritecollide(self, enemies, False)
+        if hits:
+            for enemy in hits:
+                if enemy.alive:
+                    enemy.hp -= self.damage
+                    self.kill()
+
+            # enemy loses HP
+
+        # collisionSound = mixer.Sound('explosion.wav')
             # collisionSound.play()
             return True
 

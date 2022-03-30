@@ -24,7 +24,7 @@ def start():
     mixer.music.play(-1)
     mixer.music.set_volume(mixer.music.get_volume() / 2)
 
-    # move throught map scrolling it
+    # main throught map scrolling it
     map_position = [100, 100]
 
     # Player: name, starting position, size, img
@@ -99,33 +99,21 @@ def start():
         enemies.draw(screen)
 
         for enemy in enemies:
-            enemy.move(screen, map_position)
-            # check for bullets colliding with enemy
-            hit = pygame.sprite.spritecollide(enemy, player.bullets, True)
+            enemy.main(screen, map_position)
 
-
+        # Draw bullets and check collision
         for bullet in player.bullets:
             bullet.main(screen)
+            bullet.getCollision(enemies)
 
         # Check colisions
         hits = pygame.sprite.spritecollide(player, enemies, False)
 
 
         # Draw Player
-        player.draw(screen)
+        player.main(screen)
 
         # Draw Buttons (screen, mouse)
-
-        # for bullet in player.bullets:
-        #     bullet.main(screen)
-        #     for enemy in enemies:
-        #         if bullet.getCollision(enemy):
-        #             bullet.x = 10000
-        #             enemy.x = 10000
-        #             enemy.move_speed = 0
-        #             del enemy
-        #             print("matou")
-
 
 
         # Update Screen

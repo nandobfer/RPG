@@ -9,6 +9,7 @@ class Creature(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((width, height))
         self.image.fill((0,0,255))
+        self.image.set_alpha(0)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -19,6 +20,11 @@ class Creature(pygame.sprite.Sprite):
         self.width = width
         self.height = height
         self.move_speed = 0.5
+        self.alive = True
+        self.max_hp = 50
+        self.hp = self.max_hp
+        self.hp_bar = pygame.Surface((width, 5))
+        self.hp_bar.fill((0,170,0))
         # self.img = self.img = pygame.image.load(img).convert_alpha()
         # self.img = pygame.transform.scale(self.img, (self.width, self.height))
         self.level = 1
@@ -60,6 +66,14 @@ class Creature(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.img, (self.x, self.y))
 
+    def healthMain(self, screen):
+        if self.hp <= 0:
+            self.alive = False
+            # self.kill()
+        else:
+            self.hp_bar = pygame.transform.scale(self.hp_bar, (self.width * self.hp / self.max_hp, 5))
+            screen.blit(self.hp_bar, (self.x, self.y - 10))
+
     def getEquipment(self):
         for item in self.equipment:
             if self.equipment[item]:
@@ -92,7 +106,9 @@ class Player(Creature):
         self.animation_count = 0
         self.move_speed = 2
 
-    def draw(self, screen):
+    # game loop event
+    def main(self, screen):
+        self.healthMain(screen)
         if self.animation_count + 1 >= 300:
             self.animation_count = 4
         self.animation_count += 10
@@ -209,7 +225,11 @@ class Player(Creature):
             if self.ammo > 0:
                 bullet = Bullet(self.x, self.y, mouse)
                 self.bullets.add(bullet)
+                bullet.damage = self.getWeapon().value
                 self.ammo -= 1
+                self.hp -= 1
+                self.hp_bar = pygame.transform.scale(self.hp_bar, (self.width * self.hp / self.max_hp,5))
+
             else:
                 # empty gun sound
                 pass
@@ -244,6 +264,8 @@ class Enemy(Creature):
         self.moving_up = False
         self.moving_down = False
         self.move_speed = 0.5
+        self.dead_img = pygame.image.load(f"assets/enemies/{name.lower()}_{variant}/dead.png")
+        self.dead_img = pygame.transform.scale(self.dead_img, (self.width, self.height))
         self.walk_img = []
         for i in range(16):
             self.walk_img.append(pygame.image.load(f"assets/enemies/{name.lower()}_{variant}/skeleton-move_{i + 1}.png"))
@@ -255,45 +277,56 @@ class Enemy(Creature):
         self.hitbox = 50
         self.last_map = map[:]
 
-    def move(self, screen, map):
-        if self.animation_count + 1 >= 256:
-             self.animation_count = 0
-        self.animation_count += 1
-
-        if self.reset_offset == 0:
-            self.offset = (random.randrange(-150, 150), random.randrange(-150, 150))
-            self.reset_offset = random.randrange(120,150)
+    # game loop event
+    def main(self, screen, map):
+        if not self.alive:
+            screen.blit(self.dead_img, (self.x, self.y))
+            self.correctPosition(map)
         else:
-            self.reset_offset -= 1
+            self.healthMain(screen)
 
-        if self.target.x + self.offset[0] > self.x:
-            self.x += self.move_speed
-            self.moving_right = True
-        if self.target.x + self.offset[0] < self.x:
-            self.x -= self.move_speed
-            self.moving_left = True
 
-        if self.target.y + self.offset[1] > self.y:
-            self.y += self.move_speed
-            self.moving_up = True
-        if self.target.y + self.offset[1] < self.y:
-            self.y -= self.move_speed
-            self.moving_down = True
+            if self.animation_count + 1 >= 256:
+                 self.animation_count = 0
+            self.animation_count += 1
 
-        if self.moving_right:
-            screen.blit(self.walk_img[self.animation_count//16], (self.x, self.y))
-        elif self.moving_left:
-            screen.blit(pygame.transform.flip(self.walk_img[self.animation_count//16], True, False), (self.x, self.y))
-        elif self.moving_up:
-            screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], 90), (self.x, self.y))
-        elif self.moving_down:
-            screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], -90), (self.x, self.y))
-        else:
-            screen.blit(self.walk_img[0], (self.x, self.y))
-        self.moving_right = False
-        self.moving_left = False
-        self.moving_up = False
-        self.moving_down = False
+            if self.reset_offset == 0:
+                self.offset = (random.randrange(-150, 150), random.randrange(-150, 150))
+                self.reset_offset = random.randrange(120,150)
+            else:
+                self.reset_offset -= 1
+
+            if self.target.x + self.offset[0] > self.x:
+                self.x += self.move_speed
+                self.moving_right = True
+            if self.target.x + self.offset[0] < self.x:
+                self.x -= self.move_speed
+                self.moving_left = True
+
+            if self.target.y + self.offset[1] > self.y:
+                self.y += self.move_speed
+                self.moving_up = True
+            if self.target.y + self.offset[1] < self.y:
+                self.y -= self.move_speed
+                self.moving_down = True
+
+            if self.moving_right:
+                screen.blit(self.walk_img[self.animation_count//16], (self.x, self.y))
+            elif self.moving_left:
+                screen.blit(pygame.transform.flip(self.walk_img[self.animation_count//16], True, False), (self.x, self.y))
+            elif self.moving_up:
+                screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], 90), (self.x, self.y))
+            elif self.moving_down:
+                screen.blit(pygame.transform.rotate(self.walk_img[self.animation_count // 16], -90), (self.x, self.y))
+            else:
+                screen.blit(self.walk_img[0], (self.x, self.y))
+            self.moving_right = False
+            self.moving_left = False
+            self.moving_up = False
+            self.moving_down = False
+            self.correctPosition(map)
+
+    def correctPosition(self, map):
         if not self.last_map[0] == map[0]:
             if self.last_map[0] > map[0]:
                 self.x += self.last_map[0] - map[0]
@@ -308,6 +341,5 @@ class Enemy(Creature):
             self.last_map[1] = map[1]
         self.rect.x = self.x
         self.rect.y = self.y
-
 
 
