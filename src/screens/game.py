@@ -35,7 +35,7 @@ def start():
     revolver = Item("Revolver", "main_hand", 10, True)
     player.addItem(revolver, 1)
     player.equipItem(revolver)
-    player.addAmmo(5)
+    player.addAmmo(50)
 
     bag = Item("Bag", "backpack", 10)
     player.addItem(bag, 2)

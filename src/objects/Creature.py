@@ -93,6 +93,8 @@ class Player(Creature):
         super().__init__(name, x, y, width, height)
         self.bullets = pygame.sprite.Group()
         self.ammo = 0
+        self.ammo_box = pygame.Surface((100, 30))
+        self.ammo_box.fill((50,50,50))
         self.inventory_size = 5
         self.moving_right = False
         self.moving_left = False
@@ -118,6 +120,7 @@ class Player(Creature):
     def main(self, screen):
         # updating and drawing health bar
         self.healthMain(screen)
+        self.drawAmmoUI(screen)
 
         # checking if attacking and controling attack speed
         if self.attacking > 0:
@@ -257,6 +260,9 @@ class Player(Creature):
         else:
             return 0
 
+    def drawAmmoUI(self, screen):
+        screen.blit(self.ammo_box, (init.resolution[0] - 120, init.resolution[1] - 50))
+
     def shoot(self, mouse):
         # if a gun is equipped
         if self.equipment['main_hand'].isgun and self.attacking == 0:
@@ -272,6 +278,15 @@ class Player(Creature):
                 # playing a gunfire sound
                 bulletSound = mixer.Sound('assets/audio/guns/revolver/fire.wav')
                 bulletSound.play()
+                # set player direction
+                if mouse[0] > self.x and mouse[0] > mouse[1]:
+                    self.direction = 'right'
+                elif mouse[0] < self.x and mouse[0] < mouse[1]:
+                    self.direction = 'left'
+                elif mouse[1] > self.y and mouse[1] > mouse[0]:
+                    self.direction = 'down'
+                elif mouse[1] < self.y and mouse[1] < mouse[0]:
+                    self.direction = 'up'
 
                 # flagging attacking for interval control
                 self.attacking = 60 * 2
