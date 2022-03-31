@@ -1,2 +1,6 @@
 Lib/*
 *.pyc
+include
+Scripts
+.idea
+Lib
