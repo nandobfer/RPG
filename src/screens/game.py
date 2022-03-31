@@ -24,7 +24,7 @@ def start():
     mixer.music.play(-1)
     mixer.music.set_volume(mixer.music.get_volume() / 2)
 
-    # main throught map scrolling it
+    # main through map scrolling it
     map_position = [1000, 1000]
 
     # Player: name, starting position, size, img

@@ -94,6 +94,7 @@ class Player(Creature):
         self.bullets = pygame.sprite.Group()
         self.ammo = 0
         self.ammo_box = pygame.Surface((100, 30))
+        self.ammo_txt = conf.small_text.render(str(self.ammo), True, (170, 170, 170))
         self.ammo_box.fill((50,50,50))
         self.inventory_size = 5
         self.moving_right = False
@@ -135,7 +136,7 @@ class Player(Creature):
             self.animation_count = 4
         self.animation_count += 10
 
-        if self.changed_weapon and self.equipment['main_hand'].name == 'Knife':
+        if self.haveWeapon() and self.changed_weapon and self.equipment['main_hand'].name == 'Knife':
             self.changed_weapon = False
             self.img_body_idle = []
             self.img_body_walking = []
@@ -147,7 +148,7 @@ class Player(Creature):
                 self.img_body_idle[i] = pygame.transform.scale(self.img_body_idle[i], (self.width, self.height))
                 self.img_body_walking[i] = pygame.transform.scale(self.img_body_walking[i], (self.width, self.height))
                 self.img_feet_walking[i] = pygame.transform.scale(self.img_feet_walking[i], (self.width, self.height))
-        elif self.changed_weapon and self.equipment['main_hand'].name == 'Revolver':
+        elif self.haveWeapon() and self.changed_weapon and self.equipment['main_hand'].name == 'Revolver':
             self.changed_weapon = False
             self.img_body_idle = []
             self.img_body_walking = []
@@ -240,6 +241,8 @@ class Player(Creature):
             for bullet in self.bullets:
                 bullet.y -= self.move_speed
 
+        # walking sound
+
         return True
 
     # name = string, type = 'armor/weapon/ammo', param value
@@ -249,6 +252,10 @@ class Player(Creature):
 
     def getWeapon(self):
         return self.equipment['main_hand']
+
+    def haveWeapon(self):
+        if self.equipment['main_hand']:
+            return True
 
     def getRings(self):
         if self.equipment[l_ring] and self.equipment[r_ring]:
@@ -261,7 +268,13 @@ class Player(Creature):
             return 0
 
     def drawAmmoUI(self, screen):
-        screen.blit(self.ammo_box, (init.resolution[0] - 120, init.resolution[1] - 50))
+        weapon = self.getWeapon()
+        if weapon:
+            if weapon.isgun:
+                screen.blit(self.ammo_box, (init.resolution[0] - 120, init.resolution[1] - 50))
+                self.ammo_txt = conf.small_text.render(str(self.ammo), True, (170, 170, 170))
+                screen.blit(self.ammo_txt, (init.resolution[0] - 80, init.resolution[1] - 45))
+
 
     def shoot(self, mouse):
         # if a gun is equipped
