@@ -102,15 +102,15 @@ class Player(Creature):
         self.moving_up = False
         self.moving_down = False
         self.changed_weapon = False
-        self.img_feet_idle = pygame.image.load(f"assets/player/Top_Down_Survivor/feet/idle/survivor-idle_0.png")
+        self.img_feet_idle = pygame.image.load(f"src/assets/player/Top_Down_Survivor/feet/idle/survivor-idle_0.png")
         self.img_feet_idle = pygame.transform.scale(self.img_feet_idle, (self.width, self.height))
         self.img_body_idle = []
         self.img_body_walking = []
         self.img_feet_walking = []
         for i in range(20):
-            self.img_body_idle.append(pygame.image.load(f"assets/player/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_{i}.png"))
-            self.img_body_walking.append(pygame.image.load(f"assets/player/Top_Down_Survivor/handgun/move/survivor-move_handgun_{i}.png"))
-            self.img_feet_walking.append(pygame.image.load(f"assets/player/Top_Down_Survivor/feet/walk/survivor-walk_{i}.png"))
+            self.img_body_idle.append(pygame.image.load(f"src/assets/player/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_{i}.png"))
+            self.img_body_walking.append(pygame.image.load(f"src/assets/player/Top_Down_Survivor/handgun/move/survivor-move_handgun_{i}.png"))
+            self.img_feet_walking.append(pygame.image.load(f"src/assets/player/Top_Down_Survivor/feet/walk/survivor-walk_{i}.png"))
             self.img_body_idle[i] = pygame.transform.scale(self.img_body_idle[i], (self.width, self.height))
             self.img_body_walking[i] = pygame.transform.scale(self.img_body_walking[i], (self.width, self.height))
             self.img_feet_walking[i] = pygame.transform.scale(self.img_feet_walking[i], (self.width, self.height))
@@ -127,7 +127,7 @@ class Player(Creature):
         if self.attacking > 0:
             self.attacking -= self.attack_speed
             if self.attacking == 30 and self.equipment['main_hand'].isgun:
-                bulletSound = mixer.Sound('assets/audio/guns/revolver/clicking.mp3')
+                bulletSound = mixer.Sound('src/assets/audio/guns/revolver/clicking.mp3')
                 bulletSound.play()
 
 
@@ -142,9 +142,9 @@ class Player(Creature):
             self.img_body_walking = []
             self.img_feet_walking = []
             for i in range(20):
-                self.img_body_idle.append(pygame.image.load(f"assets/player/Top_Down_Survivor/knife/idle/survivor-idle_knife_{i}.png"))
-                self.img_body_walking.append(pygame.image.load(f"assets/player/Top_Down_Survivor/knife/move/survivor-move_knife_{i}.png"))
-                self.img_feet_walking.append(pygame.image.load(f"assets/player/Top_Down_Survivor/feet/walk/survivor-walk_{i}.png"))
+                self.img_body_idle.append(pygame.image.load(f"src/assets/player/Top_Down_Survivor/knife/idle/survivor-idle_knife_{i}.png"))
+                self.img_body_walking.append(pygame.image.load(f"src/assets/player/Top_Down_Survivor/knife/move/survivor-move_knife_{i}.png"))
+                self.img_feet_walking.append(pygame.image.load(f"src/assets/player/Top_Down_Survivor/feet/walk/survivor-walk_{i}.png"))
                 self.img_body_idle[i] = pygame.transform.scale(self.img_body_idle[i], (self.width, self.height))
                 self.img_body_walking[i] = pygame.transform.scale(self.img_body_walking[i], (self.width, self.height))
                 self.img_feet_walking[i] = pygame.transform.scale(self.img_feet_walking[i], (self.width, self.height))
@@ -155,11 +155,11 @@ class Player(Creature):
             self.img_feet_walking = []
             for i in range(20):
                 self.img_body_idle.append(
-                    pygame.image.load(f"assets/player/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_{i}.png"))
+                    pygame.image.load(f"src/assets/player/Top_Down_Survivor/handgun/idle/survivor-idle_handgun_{i}.png"))
                 self.img_body_walking.append(
-                    pygame.image.load(f"assets/player/Top_Down_Survivor/handgun/move/survivor-move_handgun_{i}.png"))
+                    pygame.image.load(f"src/assets/player/Top_Down_Survivor/handgun/move/survivor-move_handgun_{i}.png"))
                 self.img_feet_walking.append(
-                    pygame.image.load(f"assets/player/Top_Down_Survivor/feet/walk/survivor-walk_{i}.png"))
+                    pygame.image.load(f"src/assets/player/Top_Down_Survivor/feet/walk/survivor-walk_{i}.png"))
                 self.img_body_idle[i] = pygame.transform.scale(self.img_body_idle[i], (self.width, self.height))
                 self.img_body_walking[i] = pygame.transform.scale(self.img_body_walking[i], (self.width, self.height))
                 self.img_feet_walking[i] = pygame.transform.scale(self.img_feet_walking[i], (self.width, self.height))
@@ -289,7 +289,7 @@ class Player(Creature):
                 # removing a bullet
                 self.ammo -= 1
                 # playing a gunfire sound
-                bulletSound = mixer.Sound('assets/audio/guns/revolver/fire.wav')
+                bulletSound = mixer.Sound('src/assets/audio/guns/revolver/fire.wav')
                 bulletSound.play()
                 # set player direction
                 if mouse[0] > self.x and mouse[0] > mouse[1]:
@@ -305,7 +305,7 @@ class Player(Creature):
                 self.attacking = 60 * 2
 
             else:
-                bulletSound = mixer.Sound('assets/audio/guns/revolver/clicking.mp3')
+                bulletSound = mixer.Sound('src/assets/audio/guns/revolver/clicking.mp3')
                 bulletSound.play()
                 pass
     
@@ -339,11 +339,11 @@ class Enemy(Creature):
         self.moving_up = False
         self.moving_down = False
         self.move_speed = 0.5
-        self.dead_img = pygame.image.load(f"assets/enemies/{name.lower()}_{variant}/dead.png")
+        self.dead_img = pygame.image.load(f"src/assets/enemies/{name.lower()}_{variant}/dead.png")
         self.dead_img = pygame.transform.scale(self.dead_img, (self.width, self.height))
         self.walk_img = []
         for i in range(16):
-            self.walk_img.append(pygame.image.load(f"assets/enemies/{name.lower()}_{variant}/skeleton-move_{i + 1}.png"))
+            self.walk_img.append(pygame.image.load(f"src/assets/enemies/{name.lower()}_{variant}/skeleton-move_{i + 1}.png"))
             self.walk_img[i] = pygame.transform.scale(self.walk_img[i], (self.width, self.height))
         self.animation_count = 0
         self.reset_offset = 0

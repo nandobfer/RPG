@@ -8,5 +8,5 @@ resolution = (1024, 768)
 pygame.init()
 # Title and Icon
 pygame.display.set_caption("RPG")
-icon = pygame.image.load('assets/icon.png')
+icon = pygame.image.load('src/assets/icon.png')
 pygame.display.set_icon(icon)

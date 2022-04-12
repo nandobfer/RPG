@@ -14,13 +14,13 @@ def start():
     all_sprites = pygame.sprite.Group()
 
     # Background
-    background = pygame.image.load('assets/maps/map1.jpg').convert()
+    background = pygame.image.load('src/assets/maps/map1.jpg').convert()
     background = pygame.transform.scale(background, (init.resolution[0] * 3, init.resolution[1] * 3))
     map_size = (background.get_width(),background.get_height())
     print(map_size)
 
     # Music
-    mixer.music.load('assets/audio/game.mp3')
+    mixer.music.load('src/assets/audio/game.mp3')
     mixer.music.play(-1)
     mixer.music.set_volume(mixer.music.get_volume() / 2)
 
@@ -133,12 +133,12 @@ def pause(screen, player):
     screen.blit(pause_background, (0, 0))
 
     # Quit Button
-    quit = Button("Quit", (300, 200), "assets/buttons/button.png")
+    quit = Button("Quit", (300, 200), "src/assets/buttons/button.png")
     quit.setOffset(10, 60)
     quit.setPosition(710, 680)
 
     # Unpause Button
-    unpause = Button("Unpause", (300, 200), "assets/buttons/button.png")
+    unpause = Button("Unpause", (300, 200), "src/assets/buttons/button.png")
     unpause.setOffset(10, 60)
     unpause.setPosition(375, 680)
 
@@ -228,7 +228,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Head
     if not player.equipment['head']:
-        head = Slot("", size, "assets/items/empty_slots/head.png")
+        head = Slot("", size, "src/assets/items/empty_slots/head.png")
         head.setPosition(114, 286)
         head.draw(screen, mouse)
     else:
@@ -243,7 +243,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Chest
     if not player.equipment['chest']:
-        chest = Slot("", size, "assets/items/empty_slots/chest.png")
+        chest = Slot("", size, "src/assets/items/empty_slots/chest.png")
         chest.setPosition(114, 350)
         chest.draw(screen, mouse)
     else:
@@ -256,7 +256,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Legs
     if not player.equipment['legs']:
-        legs = Slot("", size, "assets/items/empty_slots/trousers.png")
+        legs = Slot("", size, "src/assets/items/empty_slots/trousers.png")
         legs.setPosition(114, 414)
         legs.draw(screen, mouse)
     else:
@@ -269,7 +269,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Boots
     if not player.equipment['boots']:
-        boots = Slot("", size, "assets/items/empty_slots/feet.png")
+        boots = Slot("", size, "src/assets/items/empty_slots/feet.png")
         boots.setPosition(114, 478)
         boots.draw(screen, mouse)
     else:
@@ -282,7 +282,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Neck Slot
     if not player.equipment['neck']:
-        neck = Slot("", size, "assets/items/empty_slots/neck.png")
+        neck = Slot("", size, "src/assets/items/empty_slots/neck.png")
         neck.setPosition(50, 318)
         neck.draw(screen, mouse)
     else:
@@ -295,7 +295,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Backpack Slot
     if not player.equipment['backpack']:
-        backpack = Slot("", size, "assets/items/empty_slots/offhand.png")
+        backpack = Slot("", size, "src/assets/items/empty_slots/offhand.png")
         backpack.setPosition(178, 318)
         backpack.draw(screen, mouse)
     else:
@@ -309,7 +309,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Weapon Slot
     if not player.equipment['main_hand']:
-        mainhand = Slot("", size, "assets/items/empty_slots/mainhand.png")
+        mainhand = Slot("", size, "src/assets/items/empty_slots/mainhand.png")
         mainhand.setPosition(50, 382)
         mainhand.draw(screen, mouse)
     else:
@@ -322,7 +322,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Off Hand Slot
     if not player.equipment['off_hand']:
-        offhand = Slot("", size, "assets/items/empty_slots/offhand.png")
+        offhand = Slot("", size, "src/assets/items/empty_slots/offhand.png")
         offhand.setPosition(178, 382)
         offhand.draw(screen, mouse)
     else:
@@ -335,7 +335,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Ring 1 Slot
     if not player.equipment['l_ring']:
-        l_ring = Slot("", size, "assets/items/empty_slots/ring.png")
+        l_ring = Slot("", size, "src/assets/items/empty_slots/ring.png")
         l_ring.setPosition(50, 446)
         l_ring.draw(screen, mouse)
     else:
@@ -348,7 +348,7 @@ def drawEquipment(screen, mouse, player, event):
 
     # Ring 2 Slot
     if not player.equipment['r_ring']:
-        r_ring = Slot("", size, "assets/items/empty_slots/ring.png")
+        r_ring = Slot("", size, "src/assets/items/empty_slots/ring.png")
         r_ring.setPosition(178, 446)
         r_ring.draw(screen, mouse)
     else:
@@ -363,7 +363,7 @@ def drawEquipment(screen, mouse, player, event):
 def drawEquipFrames(screen, mouse):
     size = (64,64)
     # Empy
-    empty_slot = Slot("", size, "assets/items/empty_slots/frame.png")
+    empty_slot = Slot("", size, "src/assets/items/empty_slots/frame.png")
     # Head
     empty_slot.setPosition(114, 286)
     empty_slot.draw(screen, mouse)
@@ -398,6 +398,6 @@ def drawEquipFrames(screen, mouse):
 # Draw an empty frame
 def drawFrames(screen, x, y, mouse):
     size = (64, 64)
-    empty_slot = Slot("", size, "assets/items/empty_slots/frame.png")
+    empty_slot = Slot("", size, "src/assets/items/empty_slots/frame.png")
     empty_slot.setPosition(x, y)
     empty_slot.draw(screen, mouse)

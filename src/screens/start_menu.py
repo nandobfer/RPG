@@ -8,12 +8,12 @@ def start():
     screen = pygame.display.set_mode(init.resolution, DOUBLEBUF, 16)
 
     # Music
-    mixer.music.load('assets/audio/main_menu.mp3')
+    mixer.music.load('src/assets/audio/main_menu.mp3')
     mixer.music.play(-1)
     mixer.music.set_volume(mixer.music.get_volume() / 2)
 
     # Background
-    background = pygame.image.load('assets/background.jpg').convert()
+    background = pygame.image.load('src/assets/background.jpg').convert()
     background = pygame.transform.scale(background, init.resolution)
 
     # Start Menu Flag
@@ -23,12 +23,12 @@ def start():
     clock = pygame.time.Clock()
 
     # Quit Button
-    quit = Button("Quit", (300,200), "assets/buttons/button.png")
+    quit = Button("Quit", (300,200), "src/assets/buttons/button.png")
     quit.setOffset(10, 60)
     quit.setPosition(710, 680)
 
     # Play Button
-    play = Button("Play", (300,200), "assets/buttons/button.png")
+    play = Button("Play", (300,200), "src/assets/buttons/button.png")
     play.setOffset(10,60)
     play.setPosition(375, 680)
 
